@@ -19,8 +19,11 @@ def _load_tracker_site():
 def _get_hashable_key(entry):
     return (entry['Finder'],entry['Location'])
 
+def _get_stats_hashable_key(entry):
+    return (entry['Name'],entry['Game'])
+
 def _load_player_stats_site():
-    tracker_site_ip = os.environ["PLAYER_SITE_URL"] #multiworld tracker site NOT sphere tracker
+    tracker_site_ip = os.environ["STATS_SITE_URL"] #multiworld tracker site NOT sphere tracker
 
     try:
         response = requests.get(tracker_site_ip)
@@ -43,6 +46,7 @@ def get_player_stats():
     
     table = html.fromstring(player_site_html).find(".//table[@id='checks-table']")
     columns = [col.text_content().strip() for col in table[0].xpath("tr/th")]
+    footer_columns = ["Status", "Checks", "%", "Last Activity"]
     body = table[1]
     foot = table[2]
 
@@ -51,16 +55,19 @@ def get_player_stats():
     for entry in body:
         values = [cell.text_content().strip() for cell in entry]
         new_entry = (dict(zip(columns, values)))
-        new_entry_hash = _get_hashable_key(new_entry)
+        new_entry_hash = _get_stats_hashable_key(new_entry)
 
         result[new_entry_hash] = new_entry
 
+    #custom footer logic
     for entry in foot:
         values = [cell.text_content().strip() for cell in entry]
-        new_entry = (dict(zip(columns, values)))
-        new_entry_hash = _get_hashable_key(new_entry)
-
-        result[new_entry_hash] = new_entry
+        neededValues = []
+        for i in range(2, len(values)):
+            neededValues.append(values[i])
+        
+        new_entry = (dict(zip(footer_columns, neededValues)))
+        result["Footer"] = new_entry
 
         return result
 
