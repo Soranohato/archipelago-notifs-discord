@@ -20,7 +20,7 @@ def _get_hashable_key(entry):
     return (entry['Finder'],entry['Location'])
 
 def _get_stats_hashable_key(entry):
-    return (entry['Name'],entry['Game'])
+    return (entry['Name'])
 
 def _load_player_stats_site():
     tracker_site_ip = os.environ["STATS_SITE_URL"] #multiworld tracker site NOT sphere tracker
@@ -46,30 +46,40 @@ def get_player_stats():
     
     table = html.fromstring(player_site_html).find(".//table[@id='checks-table']")
     columns = [col.text_content().strip() for col in table[0].xpath("tr/th")]
-    footer_columns = ["Status", "Checks", "%", "Last Activity"]
+    footer_columns = ["Status", "Checks", "%", "LastActivity"]
     body = table[1]
     foot = table[2]
+    activity_min = -1.0
 
     result = {}
 
     for entry in body:
         values = [cell.text_content().strip() for cell in entry]
         new_entry = (dict(zip(columns, values)))
+
+        if (activity_min == -1.0):
+            print(new_entry)
+            activity_min = float(new_entry['LastActivity'])
+        else:
+            activity_min = min(activity_min, float(new_entry['LastActivity']))
+
         new_entry_hash = _get_stats_hashable_key(new_entry)
 
         result[new_entry_hash] = new_entry
 
     #custom footer logic
-    for entry in foot:
-        values = [cell.text_content().strip() for cell in entry]
-        neededValues = []
-        for i in range(2, len(values)):
-            neededValues.append(values[i])
-        
-        new_entry = (dict(zip(footer_columns, neededValues)))
-        result["Footer"] = new_entry
+    values = [cell.text_content().strip() for cell in foot[0]]
 
-        return result
+    neededValues = []
+    for i in range(2, len(values)):
+        neededValues.append(values[i])
+    
+    new_entry = (dict(zip(footer_columns, neededValues)))
+    new_entry['LastActivity'] = str(activity_min)
+    result["Footer"] = new_entry
+
+        
+    return result
 
 # gets the n most recent actions as an array of dictionaries.
 def get_recent_archipelago_actions(n=-1):
