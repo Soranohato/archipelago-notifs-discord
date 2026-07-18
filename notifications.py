@@ -211,14 +211,10 @@ async def list_burger_king_patrons(channel):
 async def send_stats_msg(message, channel):
     await channel.send(message)
 
-async def parse_usr_msg(message):
+async def parse_notif_msg(message, args, argsLen):
     global current_notifications
 
-    args = shlex.split(message.content[1:])
-    argsLen = len(args)
-    print(args)
-
-    if (argsLen > 0 and args[0].lower() == "notify"):
+    if (argsLen > 0 and args[0].lower() == "argo"):
         if (argsLen == 1):
             await send_usage_help_msg(message.channel)
             return

@@ -2,10 +2,11 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import tasks
 import os
+import shlex
 
 # custom module imports
 from archipelago_site import get_recent_archipelago_actions, check_for_new_archipelago_actions
-from notifications import remove_notification, parse_usr_msg, current_notifications, save_notifs_to_file, load_notifs_from_file, load_patrons_from_bk, current_burger_king_patrons
+from notifications import remove_notification, parse_notif_msg, current_notifications, save_notifs_to_file, load_notifs_from_file, load_patrons_from_bk, current_burger_king_patrons
 from datetime import datetime, timezone
 
 # globals
@@ -106,8 +107,13 @@ async def on_ready():
 async def on_message(message):
     global updates_channel
 
-    if message.content.startswith("!") and updates_channel and message.channel == updates_channel:
-        await parse_usr_msg(message)
+    # parses the user message for a command
+    if message.content.startswith("!argo") and updates_channel and message.channel == updates_channel:
+            args = shlex.split(message.content[1:])
+            argsLen = len(args)
+            print(args)
+
+            await parse_notif_msg(message, args, argsLen)
 
     if client.user.mentioned_in(message):
         if not updates_channel:
