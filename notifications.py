@@ -72,8 +72,8 @@ def save_patrons_to_bk():
     json.dump(current_burger_king_patrons, file)
 
 def format_hours_minutes(last_activity):
-    last_activity_hours = int(last_activity / 60 / 60)
-    last_activity_minutes_percent = (last_activity / 60 / 60) % 1
+    last_activity_hours = int(float(last_activity) / 60 / 60)
+    last_activity_minutes_percent = (float(last_activity) / 60 / 60) % 1
     last_activity_minutes = int(last_activity_minutes_percent * 60)
     return f"{last_activity_hours}:{last_activity_minutes}"
 
@@ -271,7 +271,7 @@ async def parse_usr_msg(message):
                 await list_burger_king_patrons(message.channel)
 
             case "stats":
-                if (argsLen != 3 or argsLen != 2):
+                if (argsLen != 3 and argsLen != 2):
                     await send_usage_help_msg(message.channel)
                     return
                 
@@ -279,8 +279,8 @@ async def parse_usr_msg(message):
 
                 if (argsLen == 2):
                     complete = statsTable['Footer']
-                    last_activity = format_hours_minutes(player_stats['LastActivity'])
-                    msg_content = f"***Overall Stats***\n**Games Complete: **{complete['Status']}\n**Checks complete: **{complete['Checks']}\n**Percent Complete: **{complete['%']}\n**Last Activity: **{complete['Last Activity']}\n**Last Activity: {last_activity}"
+                    last_activity = format_hours_minutes(complete['LastActivity'])
+                    msg_content = f"# ***Overall Stats***\n**Games Complete: **{complete['Status']}\n**Checks complete: **{complete['Checks']}\n**Percent Complete: **{complete['%']}\n**Last Activity: **{last_activity}"
                     await send_stats_msg(msg_content, message.channel)
                     return
 
@@ -291,7 +291,7 @@ async def parse_usr_msg(message):
                 else:
                     player_stats = statsTable[playerName]
                     last_activity = format_hours_minutes(player_stats['LastActivity'])
-                    msg_content = f"***{playerName}'s Stats***\n**Game: **{player_stats['Game']}\n**Status: **{player_stats['Status']}\n**Checks complete: **{player_stats['Checks']}\n**Percent Complete: **{player_stats['&percnt;']}\n**Last Activity: {last_activity}"
+                    msg_content = f"# ***{playerName}'s Stats***\n**Game: **{player_stats['Game']}\n**Status: **{player_stats['Status']}\n**Checks complete: **{player_stats['Checks']}\n**Percent Complete: **{player_stats['&percnt;']}\n**Last Activity: **{last_activity}"
                     await send_stats_msg(msg_content, message.channel)
  
             case _:
