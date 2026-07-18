@@ -218,9 +218,6 @@ async def parse_notif_msg(message, args, argsLen):
         if (argsLen == 1 or argsLen == 2):
             await send_usage_help_msg(message.channel)
             return
-        
-        if (args[1].lower() != "notify"):
-            await send_usage_help_msg(message.channel)
 
         match args[2].lower():
             case "add":

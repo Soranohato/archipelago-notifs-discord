@@ -113,7 +113,9 @@ async def on_message(message):
             argsLen = len(args)
             print(args)
 
-            await parse_notif_msg(message, args, argsLen)
+            # parses notify commands
+            if args[1].lower() == "notify":
+                await parse_notif_msg(message, args, argsLen)
 
     if client.user.mentioned_in(message):
         if not updates_channel:
