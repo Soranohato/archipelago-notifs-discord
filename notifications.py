@@ -215,32 +215,35 @@ async def parse_notif_msg(message, args, argsLen):
     global current_notifications
 
     if (argsLen > 0 and args[0].lower() == "argo"):
-        if (argsLen == 1):
+        if (argsLen == 1 or argsLen == 2):
             await send_usage_help_msg(message.channel)
             return
+        
+        if (args[1].lower() != "notify"):
+            await send_usage_help_msg(message.channel)
 
-        match args[1].lower():
+        match args[2].lower():
             case "add":
                 # create a new notification (if it does not already exist)
 
-                if (argsLen != 4):
+                if (argsLen != 5):
                     await send_usage_help_msg(message.channel)
                     return
 
                 user = message.author
-                itemName = args[2].lower().strip()
-                playerName = args[3].lower().strip()
+                itemName = args[3].lower().strip()
+                playerName = args[4].lower().strip()
 
                 await add_notification(user,itemName,playerName,message.channel)
 
             case "remove":
                 # remove an existing notification (if a matching one exists)
-                if (argsLen != 4):
+                if (argsLen != 5):
                     await send_usage_help_msg(message.channel)
                     return
 
-                itemName = args[2].lower().strip()
-                playerName = args[3].lower().strip()
+                itemName = args[3].lower().strip()
+                playerName = args[4].lower().strip()
 
                 await remove_notification(message.author, itemName, playerName, message.channel)
 
