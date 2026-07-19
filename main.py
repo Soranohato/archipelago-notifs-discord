@@ -6,7 +6,8 @@ import shlex
 
 # custom module imports
 from archipelago_site import get_recent_archipelago_actions, check_for_new_archipelago_actions
-from notifications import remove_notification, parse_notif_msg, current_notifications, save_notifs_to_file, load_notifs_from_file, load_patrons_from_bk, current_burger_king_patrons
+from notifications import remove_notification, parse_notif_msg, current_notifications, save_notifs_to_file, load_notifs_from_file, send_usage_help_msg
+from burger_king import parse_bk_msg, load_patrons_from_bk, current_burger_king_patrons
 from datetime import datetime, timezone
 
 # globals
@@ -113,9 +114,16 @@ async def on_message(message):
             argsLen = len(args)
             print(args)
 
-            # parses notify commands
+            # parses command type
             if args[1].lower() == "notify":
+                print("notify msg")
                 await parse_notif_msg(message, args, argsLen)
+            elif "bk" in args[1].lower():
+                print("bk msg")
+                await parse_bk_msg(message, args, argsLen)
+            else:
+                print("help msg")
+                await send_usage_help_msg(message.channel)
 
     if client.user.mentioned_in(message):
         if not updates_channel:
