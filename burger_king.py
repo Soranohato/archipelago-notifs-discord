@@ -1,4 +1,7 @@
-from collections import namedtuple
+# This module stores data and functions associated with the "Burger King"
+# feature. It allows people to put themselves in "burger king" so people
+# may see when they are unable to progress.
+
 import json
 import os
 import numpy as np
@@ -82,7 +85,6 @@ async def parse_bk_msg(message, args, argsLen):
 
         match args[1].lower():
             case "gotobk":
-                print("goto msg")
                 if (argsLen != 3):
                     await send_usage_help_msg(message.channel)
                     return
@@ -92,7 +94,6 @@ async def parse_bk_msg(message, args, argsLen):
                 await go_to_burger_king(playerName, message.channel)
 
             case "leavebk":
-                print("leave msg")
                 if (argsLen != 3):
                     await send_usage_help_msg(message.channel)
                     return
@@ -103,7 +104,6 @@ async def parse_bk_msg(message, args, argsLen):
             case "listbk":
                 await list_burger_king_patrons(message.channel)
             case _:
-                print("bk help msg")
                 await send_usage_help_msg(message.channel)
 
 async def send_usage_help_msg(channel):

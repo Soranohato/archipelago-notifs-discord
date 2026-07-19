@@ -9,9 +9,6 @@ import os
 import numpy as np
 from datetime import datetime, timezone
 
-#custom module import
-from archipelago_site import get_player_stats
-
 filename = "saved_notifs.json"
 current_notifications = []
 
@@ -29,12 +26,6 @@ def load_notifs_from_file():
 def save_notifs_to_file():
     file = open(filename, 'w+')
     json.dump(current_notifications, file)
-
-def format_hours_minutes(last_activity):
-    last_activity_hours = int(float(last_activity) / 60 / 60)
-    last_activity_minutes_percent = (float(last_activity) / 60 / 60) % 1
-    last_activity_minutes = int(last_activity_minutes_percent * 60)
-    return f"{last_activity_hours}:{last_activity_minutes}"
 
 async def add_notification(user, itemName, playerName, channel):
     userID = user.id
@@ -136,9 +127,6 @@ async def list_notifications(channel):
         notifsListStr += "```"
         await channel.send(notifsListStr)
 
-async def send_stats_msg(message, channel):
-    await channel.send(message)
-
 async def parse_notif_msg(message, args, argsLen):
     global current_notifications
 
@@ -174,29 +162,6 @@ async def parse_notif_msg(message, args, argsLen):
 
             case "list":
                 await list_notifications(message.channel)
-            case "stats":
-                if (argsLen != 3 and argsLen != 2):
-                    await send_usage_help_msg(message.channel)
-                    return
-                
-                statsTable = get_player_stats()
-
-                if (argsLen == 2):
-                    complete = statsTable['Footer']
-                    last_activity = format_hours_minutes(complete['LastActivity'])
-                    msg_content = f"# ***Overall Stats***\n**Games Complete: **{complete['Status']}\n**Checks complete: **{complete['Checks']}\n**Percent Complete: **{complete['%']}\n**Last Activity: **{last_activity}"
-                    await send_stats_msg(msg_content, message.channel)
-                    return
-
-                playerName = args[2].strip()
-
-                if(not playerName in statsTable):
-                    await message.channel.send(f"{playerName} does not exist in this Archipelago!")
-                else:
-                    player_stats = statsTable[playerName]
-                    last_activity = format_hours_minutes(player_stats['LastActivity'])
-                    msg_content = f"# ***{playerName}'s Stats***\n**Game: **{player_stats['Game']}\n**Status: **{player_stats['Status']}\n**Checks complete: **{player_stats['Checks']}\n**Percent Complete: **{player_stats['&percnt;']}\n**Last Activity: **{last_activity}"
-                    await send_stats_msg(msg_content, message.channel)
  
             case _:
                 await send_usage_help_msg(message.channel)

@@ -8,6 +8,7 @@ import shlex
 from archipelago_site import get_recent_archipelago_actions, check_for_new_archipelago_actions
 from notifications import remove_notification, parse_notif_msg, current_notifications, save_notifs_to_file, load_notifs_from_file, send_usage_help_msg
 from burger_king import parse_bk_msg, load_patrons_from_bk, current_burger_king_patrons
+from stats import parse_stats_msg
 from datetime import datetime, timezone
 
 # globals
@@ -121,6 +122,9 @@ async def on_message(message):
             elif "bk" in args[1].lower():
                 print("bk msg")
                 await parse_bk_msg(message, args, argsLen)
+            elif args[1].lower() == "stats":
+                print("stats msg")
+                await parse_stats_msg(message, args, argsLen)
             else:
                 print("help msg")
                 await send_usage_help_msg(message.channel)
