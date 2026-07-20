@@ -6,7 +6,6 @@
 from collections import namedtuple
 import json
 import os
-import numpy as np
 from datetime import datetime, timezone
 
 filename = "saved_notifs.json"

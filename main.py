@@ -7,7 +7,6 @@ import shlex
 # custom module imports
 from archipelago_site import get_recent_archipelago_actions, check_for_new_archipelago_actions
 from notifications import remove_notification, parse_notif_msg, current_notifications, save_notifs_to_file, load_notifs_from_file, send_usage_help_msg
-import notifications
 from burger_king import parse_bk_msg, load_patrons_from_bk, current_burger_king_patrons
 from stats import parse_stats_msg
 from datetime import datetime, timezone

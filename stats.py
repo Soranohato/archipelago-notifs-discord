@@ -2,12 +2,6 @@
 # feature allows a player to look up a player's stats or the overall stats
 # of the current archipelago.
 
-from collections import namedtuple
-import json
-import os
-import numpy as np
-from datetime import datetime, timezone
-
 #custom module import
 from archipelago_site import get_player_stats
 
