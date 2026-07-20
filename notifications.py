@@ -19,17 +19,25 @@ def load_notifs_from_file():
 
     if(os.path.isfile(filename)):
         with open(filename, 'r') as file:
-            current_notifications = json.load(file)
+            data = json.load(file)
+
+        current_notifications = [
+            Notification(*entry)
+            for entry in data
+        ]
     else:
         current_notifications = []
 
 def save_notifs_to_file():
     file = open(filename, 'w+')
-    json.dump(current_notifications, file)
+    json.dump(current_notifications, file, indent=4)
 
 async def add_notification(user, itemName, playerName, channel):
     userID = user.id
     username = user.name
+
+    for notification in current_notifications:
+        print(notification, type(notification))
 
     existingNotifIndex = -1
     for i, notification in enumerate(current_notifications):
